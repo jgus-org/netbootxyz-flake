@@ -9,7 +9,7 @@ A GitHub Action checks daily for new releases and automatically updates versions
 ```nix
 # flake.nix
 {
-  inputs.netbootxyz.url = "github:jgus/netbootxyz-flake";
+  inputs.netbootxyz.url = "github:jgus-org/netbootxyz-flake";
 
   # Access individual boot files:
   # inputs.netbootxyz.packages.${system}.netboot-xyz-kpxe
