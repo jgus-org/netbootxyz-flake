@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-lib = {
       url = "github:jgus-org/flake-lib/v1";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -11,32 +15,57 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, flake-lib }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      treefmt-nix,
+      flake-lib,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pin = import ./pin.nix;
         inherit (pin) version assets;
         pkgs = import nixpkgs { inherit system; };
-        source = { type = "github"; owner = "netbootxyz"; repo = "netboot.xyz"; };
+        treefmtEval = treefmt-nix.lib.evalModule pkgs {
+          projectRootFile = "flake.nix";
+          programs.nixfmt.enable = true;
+          programs.shfmt.enable = true;
+        };
+        source = {
+          type = "github";
+          owner = "netbootxyz";
+          repo = "netboot.xyz";
+        };
 
         sanitizeName = name: builtins.replaceStrings [ "." ] [ "-" ] name;
 
-        mkBootFile = name: hash: pkgs.runCommand (sanitizeName name) { } ''
-          mkdir -p $out
-          cp ${builtins.fetchurl {
-            url = "https://github.com/netbootxyz/netboot.xyz/releases/download/${version}/${name}";
-            sha256 = hash;
-          }} $out/${name}
-        '';
+        mkBootFile =
+          name: hash:
+          pkgs.runCommand (sanitizeName name) { } ''
+            mkdir -p $out
+            cp ${
+              builtins.fetchurl {
+                url = "https://github.com/netbootxyz/netboot.xyz/releases/download/${version}/${name}";
+                sha256 = hash;
+              }
+            } $out/${name}
+          '';
 
-        bootFiles = builtins.listToAttrs (builtins.map
-          (name: {
+        bootFiles = builtins.listToAttrs (
+          builtins.map (name: {
             name = sanitizeName name;
             value = mkBootFile name assets.${name};
-          })
-          (builtins.attrNames assets));
+          }) (builtins.attrNames assets)
+        );
       in
       {
+        formatter = treefmtEval.config.build.wrapper;
+
+        checks.formatting = treefmtEval.config.build.check self;
+
         packages = bootFiles // {
           default = bootFiles."netboot-xyz-iso";
           # Bespoke build (per-asset fetchurl) + bespoke update-version (enumerates the release's
@@ -51,5 +80,6 @@
             pinSchema = "version-only";
           };
         };
-      });
+      }
+    );
 }
