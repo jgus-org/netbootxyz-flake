@@ -14,12 +14,12 @@ pin="${FLAKE_ROOT}/pin.nix"
 repo_owner=netbootxyz
 repo_name=netboot.xyz
 
-if [[ ! -f "${pin}" ]]; then
+if [[ ! -f ${pin} ]]; then
   echo "error: no pin.nix in ${FLAKE_ROOT}" >&2
   exit 1
 fi
 
-if [[ $# -ge 1 && -n "${1}" ]]; then
+if [[ $# -ge 1 && -n ${1} ]]; then
   new_version="${1#[Vv]}"
   echo "Using requested version: ${new_version}"
 else
@@ -36,22 +36,22 @@ checksums_url="https://github.com/${repo_owner}/${repo_name}/releases/download/$
 echo "Downloading ${checksums_url}..."
 tmp=$(mktemp)
 trap 'rm -f "${tmp}"' EXIT
-curl -sSfL "${checksums_url}" > "${tmp}"
+curl -sSfL "${checksums_url}" >"${tmp}"
 
 echo "Writing pin.nix..."
 {
-  echo "# Auto-managed by \`nix run .#update-version\`. Manual edits will be overwritten by the next bump."
+  echo '# Auto-managed by `nix run .#update-version`. Manual edits will be overwritten by the next bump.'
   echo "{"
   echo "  version = \"${new_version}\";"
   echo "  assets = {"
   while IFS=' *' read -r hex name; do
-    [[ "${hex}" == "#"* || -z "${hex}" || -z "${name}" ]] && continue
+    [[ ${hex} == "#"* || -z ${hex} || -z ${name} ]] && continue
     sri=$(nix hash convert --to sri --hash-algo sha256 "${hex}")
     printf '    "%s" = "%s";\n' "${name}" "${sri}"
-  done < "${tmp}"
+  done <"${tmp}"
   echo "  };"
   echo "}"
-} > "${pin}"
+} >"${pin}"
 
 echo "Verifying flake evaluates..."
 nix eval --raw --file "${pin}" version >/dev/null
