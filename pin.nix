@@ -1,6 +1,5 @@
 # Auto-managed by `nix run .#update-version`. Manual edits will be overwritten by the next bump.
 {
-  version = "3.0.2";
   assets = {
     "autoexec.ipxe" = "sha256-MTfM+R76n5Vkvbqx5LamgtefSUip9vGqa9NWpPEOLio=";
     "netboot.xyz-arm64-snp.efi" = "sha256-8MwMymC9JhJVk0lXq6zkEzsyZ5+wgTu4fR3vV18equo=";
@@ -46,4 +45,5 @@
     "netboot.xyz.lkrn" = "sha256-XuynuqxT/TVo+1FmhGmzPcQF8mF2TN+wxwxlp6HCSOE=";
     "netboot.xyz.pdsk" = "sha256-LcASAB/uf4+GCJBAXuLDLVLlIPLiyp+xIE9iqmnX3Qg=";
   };
+  version = "3.0.2";
 }
