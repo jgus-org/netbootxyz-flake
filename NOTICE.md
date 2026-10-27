@@ -1,0 +1,8 @@
+# Upstream and distributed artifacts
+
+| Artifact                                                                                                      | Licence & Notifications                                                                                                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| This flake: the Nix around the release, `update-version.sh`, these documents                                  | [MIT](LICENSE.md)                                                                                                                                                                                                           |
+| [netboot.xyz](https://github.com/netbootxyz/netboot.xyz) release `3.0.3`, whose boot files this flake fetches | [Apache-2.0](https://github.com/netbootxyz/netboot.xyz/blob/3.0.3/LICENSE); the boot components bundled inside each released image are under their own terms, which are upstream's record to keep and are not restated here |
+
+Every asset is fetched from the pinned release when its package is built, so evaluating or promoting this repository conveys nothing; serving a built output conveys upstream's release bytes unmodified, and Apache-2.0 §4 then runs the attribution obligation to upstream's own notice — the pinned revision ships a `LICENSE` and no `NOTICE` file.

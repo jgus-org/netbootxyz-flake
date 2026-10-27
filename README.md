@@ -25,6 +25,4 @@ Which file a given boot path needs — an iPXE chainload (`netboot.xyz.kpxe`, `n
 
 Nothing on the build or target host executes these files. A consumer serves `$out/<file>` over TFTP or HTTP for a PXE or UEFI boot path, or writes an `.iso`/`.img` to media. The delivered bytes are upstream's release artifacts and do not depend on the build host; outputs are defined for `x86_64-linux`, `aarch64-linux` and `aarch64-darwin`, and building one needs a builder for that host.
 
-## Licence
-
-This flake is MIT (see `LICENSE`). The boot files are not: the upstream source repository is Apache-2.0, and each released image bundles third-party boot components under their own licences. Check those before redistributing a boot file.
+See [LICENSE.md](LICENSE.md) for licensing and copyright, and [NOTICE.md](NOTICE.md) for the terms of upstream and distributed artifacts.
